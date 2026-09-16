@@ -1,0 +1,88 @@
+---
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getArticoli } from '../../lib/articoli';
+
+const articoli = await getArticoli();
+
+const perAnno = new Map<number, typeof articoli>();
+for (const articolo of articoli) {
+	const anno = articolo.data.pubDate.getFullYear();
+	const gruppo = perAnno.get(anno) ?? [];
+	gruppo.push(articolo);
+	perAnno.set(anno, gruppo);
+}
+
+const anni = [...perAnno.keys()].sort((a, b) => b - a);
+---
+
+<BaseLayout
+	title="Articoli"
+	description="Tutti gli articoli del blog: tattica, Serie A, coppe europee, calciomercato e storie di calcio."
+>
+	<div class="container">
+		<header class="page-head">
+			<p class="kicker">Archivio</p>
+			<h1>Tutti gli articoli</h1>
+			<p class="lead">
+				{articoli.length} {articoli.length === 1 ? 'articolo pubblicato' : 'articoli pubblicati'},
+				dal più recente al più vecchio.
+			</p>
+		</header>
+
+		{
+			articoli.length === 0 ? (
+				<div class="empty">
+					Ancora nessun articolo. Crea un file <code>.md</code> in
+					<code>src/content/articoli/</code> per iniziare.
+				</div>
+			) : (
+				anni.map((anno) => (
+					<section class="section">
+						<div class="section-head">
+							<h2>{anno}</h2>
+							<span class="conteggio">
+								{perAnno.get(anno)!.length}{' '}
+								{perAnno.get(anno)!.length === 1 ? 'articolo' : 'articoli'}
+							</span>
+						</div>
+						<div class="grid">
+							{perAnno.get(anno)!.map((articolo) => (
+								<PostCard articolo={articolo} />
+							))}
+						</div>
+					</section>
+				))
+			)
+		}
+	</div>
+</BaseLayout>
+
+<style>
+	.page-head {
+		max-width: var(--prose);
+		margin-bottom: 3rem;
+	}
+
+	.kicker {
+		margin-bottom: 0.75rem;
+		color: var(--brand);
+		font-family: var(--font-display);
+		font-size: 0.9rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.lead {
+		margin-top: 1rem;
+		color: var(--text-soft);
+		font-size: 1.1rem;
+	}
+
+	.conteggio {
+		color: var(--muted);
+		font-size: 0.85rem;
+		white-space: nowrap;
+	}
+</style>

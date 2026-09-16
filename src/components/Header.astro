@@ -1,0 +1,121 @@
+---
+import { NAV_LINKS, SITE } from '../consts';
+import { isCurrent, withBase } from '../lib/url';
+
+const percorso = Astro.url.pathname;
+---
+
+<header class="site-header">
+	<div class="container header-inner">
+		<a class="brand" href={withBase('/')} aria-label={`${SITE.title} — home`}>
+			<span class="brand-mark" aria-hidden="true">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+					<circle cx="12" cy="12" r="9.2" />
+					<path
+						d="M12 2.8 9.4 7.1l1.9 3.4h1.4l1.9-3.4L12 2.8ZM3.1 10.6l4.6 1.5 1.5-1.1.5-3.9M20.9 10.6l-4.6 1.5-1.5-1.1-.5-3.9M7.6 20.4l1.5-4.5-1.2-1.5-4.3.9M16.4 20.4l-1.5-4.5 1.2-1.5 4.3.9"
+					/>
+				</svg>
+			</span>
+			<span class="brand-text">{SITE.title}</span>
+		</a>
+
+		<nav aria-label="Navigazione principale">
+			<ul>
+				{
+					NAV_LINKS.map((link) => (
+						<li>
+							<a
+								href={withBase(link.href)}
+								aria-current={isCurrent(percorso, link.href) ? 'page' : undefined}
+							>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		border-bottom: 1px solid var(--border);
+		background: color-mix(in srgb, var(--bg) 85%, transparent);
+		backdrop-filter: blur(12px);
+	}
+
+	.header-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem 1.5rem;
+		padding-block: 0.9rem;
+	}
+
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.brand-mark {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		background: var(--brand);
+		color: #04140c;
+	}
+
+	.brand-mark svg {
+		width: 22px;
+		height: 22px;
+	}
+
+	.brand-text {
+		font-family: var(--font-display);
+		font-size: 1.6rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	nav ul {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	nav a {
+		display: inline-block;
+		padding: 0.4rem 0.75rem;
+		border-radius: 999px;
+		color: var(--text-soft);
+		font-family: var(--font-display);
+		font-size: 1.05rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		transition: color 0.15s ease, background 0.15s ease;
+	}
+
+	nav a:hover {
+		color: var(--text);
+		background: var(--surface);
+	}
+
+	nav a[aria-current='page'] {
+		color: var(--brand);
+		background: var(--brand-glow);
+	}
+</style>

@@ -1,0 +1,136 @@
+---
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES, CATEGORY_LIST, type CategoryId } from '../../consts';
+import { getArticoliPerCategoria } from '../../lib/articoli';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+	return CATEGORY_LIST.map((categoria) => ({
+		params: { categoria: categoria.id },
+		props: { id: categoria.id },
+	}));
+}
+
+interface Props {
+	id: CategoryId;
+}
+
+const { id } = Astro.props;
+const categoria = CATEGORIES[id];
+const articoli = await getArticoliPerCategoria(id);
+---
+
+<BaseLayout
+	title={categoria.label}
+	description={`${categoria.description} Articoli del blog ${categoria.label}.`}
+>
+	<div class="container">
+		<header class="page-head">
+			<p class="kicker">
+				<span aria-hidden="true">{categoria.emoji}</span>
+				Categoria
+			</p>
+			<h1>{categoria.label}</h1>
+			<p class="lead">{categoria.description}</p>
+		</header>
+
+		{
+			articoli.length === 0 ? (
+				<div class="empty">
+					Non ci sono ancora articoli in questa categoria.{' '}
+					<a href={withBase('/categorie/')}>Vedi le altre categorie →</a>
+				</div>
+			) : (
+				<>
+					<div class="section-head">
+						<h2>Articoli</h2>
+						<span class="conteggio">{articoli.length}</span>
+					</div>
+					<div class="grid">
+						{articoli.map((articolo) => (
+							<PostCard articolo={articolo} />
+						))}
+					</div>
+				</>
+			)
+		}
+
+		<nav class="altre" aria-label="Altre categorie">
+			<p class="altre-title">Altre categorie</p>
+			<ul>
+				{
+					CATEGORY_LIST.filter((c) => c.id !== id).map((c) => (
+						<li>
+							<a class="badge" href={withBase(`/categorie/${c.id}/`)}>
+								<span aria-hidden="true">{c.emoji}</span>
+								{c.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</BaseLayout>
+
+<style>
+	.page-head {
+		max-width: var(--prose);
+		margin-bottom: 3rem;
+	}
+
+	.kicker {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+		color: var(--brand);
+		font-family: var(--font-display);
+		font-size: 0.9rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.lead {
+		margin-top: 1rem;
+		color: var(--text-soft);
+		font-size: 1.1rem;
+	}
+
+	.conteggio {
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+
+	.empty a {
+		color: var(--brand);
+		text-decoration: underline;
+	}
+
+	.altre {
+		margin-top: 4rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.altre-title {
+		margin-bottom: 0.85rem;
+		color: var(--muted);
+		font-family: var(--font-display);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.altre ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+</style>

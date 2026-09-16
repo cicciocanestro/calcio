@@ -1,0 +1,246 @@
+---
+import { render } from 'astro:content';
+
+import type { Articolo } from '../lib/articoli';
+import { formattaData, tempoDiLettura } from '../lib/articoli';
+import { categoryOf, SITE } from '../consts';
+import { withBase } from '../lib/url';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	articolo: Articolo;
+}
+
+const { articolo } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, cover, coverAlt, draft } =
+	articolo.data;
+
+const categoria = categoryOf(category);
+const pubblicato = formattaData(pubDate);
+const aggiornato = updatedDate ? formattaData(updatedDate) : undefined;
+
+const { Content, headings } = await render(articolo);
+const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<BaseLayout title={title} description={description} image={cover} type="article">
+	<article class="post container">
+		<header class="post-header">
+			<div class="post-labels">
+				<a class="badge" href={withBase(`/categorie/${categoria.id}/`)}>
+					<span aria-hidden="true">{categoria.emoji}</span>
+					{categoria.label}
+				</a>
+				{draft && <span class="badge draft">Bozza</span>}
+			</div>
+
+			<h1>{title}</h1>
+			<p class="post-description">{description}</p>
+
+			<p class="post-meta">
+				<span>{SITE.author}</span>
+				<span class="dot"><time datetime={pubDate.toISOString()}>{pubblicato}</time></span>
+				<span class="dot">{tempoDiLettura(articolo.body)}</span>
+				{aggiornato && <span class="dot">Aggiornato il {aggiornato}</span>}
+			</p>
+		</header>
+
+		{
+			cover && (
+				<figure class="post-cover">
+					<img src={withBase(cover)} alt={coverAlt ?? ''} />
+				</figure>
+			)
+		}
+
+		<div class="post-layout">
+			{
+				indice.length > 2 && (
+					<nav class="post-toc" aria-labelledby="indice-titolo">
+						<p id="indice-titolo">Indice</p>
+						<ol>
+							{indice.map((h) => (
+								<li class={h.depth === 3 ? 'sub' : undefined}>
+									<a href={`#${h.slug}`}>{h.text}</a>
+								</li>
+							))}
+						</ol>
+					</nav>
+				)
+			}
+
+			<div class="prose">
+				<Content />
+			</div>
+		</div>
+
+		{
+			tags.length > 0 && (
+				<footer class="post-footer">
+					<p class="tags-title">Tag</p>
+					<ul class="tags">
+						{tags.map((tag) => (
+							<li>#{tag}</li>
+						))}
+					</ul>
+				</footer>
+			)
+		}
+
+		<nav class="post-nav" aria-label="Navigazione articoli">
+			<a class="btn btn-ghost" href={withBase('/articoli/')}>← Tutti gli articoli</a>
+			<a class="btn btn-ghost" href={withBase(`/categorie/${categoria.id}/`)}>
+				Altro su {categoria.label} →
+			</a>
+		</nav>
+	</article>
+</BaseLayout>
+
+<style>
+	.post {
+		max-width: var(--container);
+	}
+
+	.post-header {
+		max-width: var(--prose);
+	}
+
+	.post-labels {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.badge.draft {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.post-description {
+		margin-top: 1rem;
+		color: var(--text-soft);
+		font-size: 1.15rem;
+	}
+
+	.post-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.6rem;
+		margin-top: 1.5rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--border);
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+
+	.post-meta .dot::before {
+		content: '·';
+		margin-right: 0.6rem;
+	}
+
+	.post-cover {
+		margin: 2.5rem 0 0;
+	}
+
+	.post-cover img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+	}
+
+	.post-layout {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+		margin-top: 2.5rem;
+	}
+
+	.post-toc {
+		align-self: start;
+		padding: 1.1rem 1.2rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+	}
+
+	.post-toc p {
+		margin-bottom: 0.6rem;
+		color: var(--text);
+		font-family: var(--font-display);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.post-toc ol {
+		display: grid;
+		gap: 0.35rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		font-size: 0.88rem;
+	}
+
+	.post-toc .sub {
+		padding-left: 0.9rem;
+	}
+
+	.post-toc a {
+		color: var(--muted);
+	}
+
+	.post-toc a:hover {
+		color: var(--brand);
+	}
+
+	.post-footer {
+		max-width: var(--prose);
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+	}
+
+	.tags-title {
+		margin-bottom: 0.6rem;
+		color: var(--muted);
+		font-family: var(--font-display);
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		color: var(--text-soft);
+		font-size: 0.9rem;
+	}
+
+	.post-nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+	}
+
+	@media (min-width: 1024px) {
+		.post-layout {
+			grid-template-columns: 240px 1fr;
+			gap: 3.5rem;
+		}
+
+		.post-toc {
+			position: sticky;
+			top: 5.5rem;
+		}
+	}
+</style>

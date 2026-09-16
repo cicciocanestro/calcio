@@ -1,0 +1,111 @@
+---
+import { CATEGORY_LIST, SITE } from '../consts';
+import { withBase } from '../lib/url';
+
+const anno = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="container footer-inner">
+		<div>
+			<p class="footer-brand">{SITE.title}</p>
+			<p class="footer-tagline">{SITE.tagline}</p>
+		</div>
+
+		<nav aria-label="Categorie">
+			<p class="footer-title">Categorie</p>
+			<ul>
+				{
+					CATEGORY_LIST.map((categoria) => (
+						<li>
+							<a href={withBase(`/categorie/${categoria.id}/`)}>{categoria.label}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<nav aria-label="Il sito">
+			<p class="footer-title">Il sito</p>
+			<ul>
+				<li><a href={withBase('/articoli/')}>Tutti gli articoli</a></li>
+				<li><a href={withBase('/chi-sono/')}>Chi sono</a></li>
+				<li><a href={withBase('/rss.xml')}>Feed RSS</a></li>
+			</ul>
+		</nav>
+	</div>
+
+	<div class="container footer-bottom">
+		<p>© {anno} {SITE.title}. Scritto con la passione per il calcio.</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--border);
+		background: var(--bg-soft);
+		padding-top: 3rem;
+	}
+
+	.footer-inner {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+		padding-bottom: 2.5rem;
+	}
+
+	.footer-brand {
+		font-family: var(--font-display);
+		font-size: 1.6rem;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	.footer-tagline {
+		margin-top: 0.4rem;
+		max-width: 34ch;
+		color: var(--muted);
+		font-size: 0.92rem;
+	}
+
+	.footer-title {
+		margin-bottom: 0.75rem;
+		color: var(--text);
+		font-family: var(--font-display);
+		font-size: 0.85rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	ul {
+		display: grid;
+		gap: 0.45rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	li a {
+		color: var(--muted);
+		font-size: 0.92rem;
+	}
+
+	li a:hover {
+		color: var(--brand);
+	}
+
+	.footer-bottom {
+		padding-block: 1.25rem;
+		border-top: 1px solid var(--border);
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+
+	@media (min-width: 720px) {
+		.footer-inner {
+			grid-template-columns: 2fr 1fr 1fr;
+			gap: 3rem;
+		}
+	}
+</style>

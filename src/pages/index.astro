@@ -1,0 +1,188 @@
+---
+import PostCard from '../components/PostCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORY_LIST, SITE } from '../consts';
+import { contaPerCategoria, getArticoli, getArticoliInEvidenza } from '../lib/articoli';
+import { withBase } from '../lib/url';
+
+const articoli = await getArticoli();
+const evidenza = await getArticoliInEvidenza(3);
+const conteggi = await contaPerCategoria();
+
+const [primo, ...altri] = evidenza;
+const recenti = articoli.filter((a) => !evidenza.includes(a)).slice(0, 6);
+---
+
+<BaseLayout title={SITE.title} description={SITE.description}>
+	<section class="hero">
+		<div class="container hero-inner">
+			<p class="hero-kicker">Blog di calcio</p>
+			<h1>
+				Il calcio raccontato<br />
+				<span class="hero-accent">come si gioca</span>
+			</h1>
+			<p class="hero-text">{SITE.tagline}</p>
+			<div class="hero-actions">
+				<a class="btn" href={withBase('/articoli/')}>Leggi gli articoli</a>
+				<a class="btn btn-ghost" href={withBase('/categorie/')}>Sfoglia per categoria</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="container">
+		{
+			primo && (
+				<section class="section">
+					<div class="section-head">
+						<h2>In evidenza</h2>
+						<a href={withBase('/articoli/')}>Tutti gli articoli →</a>
+					</div>
+					<div class="grid">
+						<PostCard articolo={primo} variant="feature" />
+						{altri.map((articolo) => (
+							<PostCard articolo={articolo} />
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		<section class="section">
+			<div class="section-head">
+				<h2>Categorie</h2>
+			</div>
+			<ul class="categorie">
+				{
+					CATEGORY_LIST.map((categoria) => (
+						<li>
+							<a href={withBase(`/categorie/${categoria.id}/`)}>
+								<span class="emoji" aria-hidden="true">{categoria.emoji}</span>
+								<span class="nome">{categoria.label}</span>
+								<span class="conteggio">
+									{conteggi[categoria.id]} {conteggi[categoria.id] === 1 ? 'articolo' : 'articoli'}
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		{
+			recenti.length > 0 && (
+				<section class="section">
+					<div class="section-head">
+						<h2>Ultimi articoli</h2>
+						<a href={withBase('/articoli/')}>Archivio completo →</a>
+					</div>
+					<div class="grid">
+						{recenti.map((articolo) => (
+							<PostCard articolo={articolo} />
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		{
+			articoli.length === 0 && (
+				<div class="empty">
+					Non c'è ancora nessun articolo. Aggiungi un file Markdown in
+					<code>src/content/articoli/</code> per iniziare a scrivere.
+				</div>
+			)
+		}
+	</div>
+</BaseLayout>
+
+<style>
+	.hero {
+		position: relative;
+		margin-top: -3rem;
+		margin-bottom: 1rem;
+		padding-block: 4.5rem 4rem;
+		border-bottom: 1px solid var(--border);
+		background-color: var(--bg-soft);
+		background-image:
+			repeating-linear-gradient(90deg, transparent 0 56px, rgba(0, 224, 122, 0.045) 56px 112px),
+			radial-gradient(ellipse 70% 100% at 50% 0%, var(--brand-glow), transparent 70%);
+		overflow: hidden;
+	}
+
+	.hero-inner {
+		max-width: 780px;
+	}
+
+	.hero-kicker {
+		margin-bottom: 1rem;
+		color: var(--brand);
+		font-family: var(--font-display);
+		font-size: 0.9rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.hero-accent {
+		color: var(--brand);
+	}
+
+	.hero-text {
+		margin-top: 1.25rem;
+		max-width: 52ch;
+		color: var(--text-soft);
+		font-size: 1.12rem;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+
+	.categorie {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 1rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	.categorie a {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		grid-template-rows: auto auto;
+		gap: 0.15rem 0.85rem;
+		align-items: center;
+		height: 100%;
+		padding: 1.1rem 1.25rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+		transition: border-color 0.15s ease, background 0.15s ease;
+	}
+
+	.categorie a:hover {
+		border-color: var(--brand);
+		background: var(--surface-hover);
+	}
+
+	.categorie .emoji {
+		grid-row: span 2;
+		font-size: 1.7rem;
+	}
+
+	.categorie .nome {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	.categorie .conteggio {
+		color: var(--muted);
+		font-size: 0.82rem;
+	}
+</style>

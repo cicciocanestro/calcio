@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout title="Pagina non trovata" description="La pagina che cercavi non esiste.">
+	<div class="container errore">
+		<p class="codice">404</p>
+		<h1>Palla fuori</h1>
+		<p class="testo">
+			La pagina che cercavi non esiste, oppure è stata spostata. Ripartiamo dal centro del campo.
+		</p>
+		<div class="azioni">
+			<a class="btn" href={withBase('/')}>Torna alla home</a>
+			<a class="btn btn-ghost" href={withBase('/articoli/')}>Tutti gli articoli</a>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.errore {
+		max-width: 620px;
+		padding-block: 3rem;
+	}
+
+	.codice {
+		color: var(--brand);
+		font-family: var(--font-display);
+		font-size: clamp(4rem, 14vw, 8rem);
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.testo {
+		margin-top: 1.25rem;
+		color: var(--text-soft);
+		font-size: 1.1rem;
+	}
+
+	.azioni {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+</style>

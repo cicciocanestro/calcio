@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+
+<BaseLayout
+	title="Chi sono"
+	description="Chi scrive questo blog e perché: la passione per il calcio, da dove nasce e cosa trovi qui."
+>
+	<div class="container">
+		<header class="page-head">
+			<p class="kicker">Chi sono</p>
+			<h1>La mia passione per il calcio</h1>
+		</header>
+
+		<div class="prose">
+			<p>
+				Mi chiamo <strong>{SITE.author}</strong> e questo è il mio spazio sul calcio. Scrivo qui
+				perché il calcio, per me, non è solo novanta minuti da guardare: è la cosa che continuo a
+				pensare il giorno dopo.
+			</p>
+
+			<blockquote>
+				<p>
+					Il calcio è la cosa più importante delle cose meno importanti. — detto che ogni
+					tifoso conosce bene
+				</p>
+			</blockquote>
+
+			<h2>Perché un blog</h2>
+
+			<p>
+				Dopo anni passati a leggere, guardare e discutere partite, ho sentito il bisogno di
+				mettere in ordine le idee. Un blog è il posto giusto: mi costringe a ragionare prima di
+				parlare, a controllare un numero invece di andare a memoria, a spiegare <em>perché</em>
+				una cosa mi sembra vera.
+			</p>
+
+			<h2>Cosa trovi qui</h2>
+
+			<ul>
+				<li><strong>Tattica</strong> — moduli, principi di gioco, come si legge una partita.</li>
+				<li><strong>Serie A</strong> — il campionato italiano, partita dopo partita.</li>
+				<li><strong>Coppe europee</strong> — Champions League e le notti che restano.</li>
+				<li><strong>Nazionali</strong> — Italia, Mondiali, Europei.</li>
+				<li><strong>Calciomercato</strong> — come funzionano davvero le trattative.</li>
+				<li><strong>Storie</strong> — squadre e uomini che hanno scritto la storia del gioco.</li>
+			</ul>
+
+			<h2>Come è fatto questo sito</h2>
+
+			<p>
+				Il blog è un sito statico costruito con <a href="https://astro.build">Astro</a>. Ogni
+				articolo è un semplice file Markdown: nessun database, nessun pannello di
+				amministrazione, solo testo. Questo lo rende velocissimo da caricare e piacevole da
+				scrivere.
+			</p>
+
+			<h2>Scrivimi</h2>
+
+			<p>
+				Hai una correzione, una domanda o vuoi discutere di una partita? Sostituisci questo
+				paragrafo con la tua email o i tuoi profili social — è il primo posto in cui i lettori
+				cercheranno un contatto.
+			</p>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.page-head {
+		max-width: var(--prose);
+		margin-bottom: 2.5rem;
+	}
+
+	.kicker {
+		margin-bottom: 0.75rem;
+		color: var(--brand);
+		font-family: var(--font-display);
+		font-size: 0.9rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+</style>

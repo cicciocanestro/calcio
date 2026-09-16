@@ -1,0 +1,418 @@
+/* ---------------------------------------------------------------------------
+   Fuorigioco — stile globale
+   --------------------------------------------------------------------------- */
+
+:root {
+	--bg: #070b09;
+	--bg-soft: #0d1411;
+	--surface: #111a16;
+	--surface-hover: #16231d;
+	--border: #1f2e27;
+	--border-strong: #2c4137;
+
+	--text: #e9f2ed;
+	--text-soft: #b9cbc2;
+	--muted: #7f968b;
+
+	--brand: #00e07a;
+	--brand-dim: #0b8f52;
+	--brand-glow: rgba(0, 224, 122, 0.14);
+	--accent: #d9f24a;
+
+	--radius: 10px;
+	--radius-lg: 16px;
+
+	--font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+	--font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	--container: 1120px;
+	--prose: 68ch;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	background-color: var(--bg);
+	background-image:
+		radial-gradient(ellipse 80% 60% at 50% -20%, var(--brand-glow), transparent),
+		linear-gradient(var(--bg), var(--bg));
+	background-repeat: no-repeat;
+	color: var(--text);
+	font-family: var(--font-body);
+	font-size: 1rem;
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+img,
+picture,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--font-display);
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+
+h1 {
+	font-size: clamp(2.25rem, 6vw, 3.75rem);
+	text-transform: uppercase;
+}
+
+h2 {
+	font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+}
+
+h3 {
+	font-size: 1.35rem;
+}
+
+:focus-visible {
+	outline: 2px solid var(--brand);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+::selection {
+	background: var(--brand);
+	color: #04140c;
+}
+
+/* --- Layout ---------------------------------------------------------------- */
+
+.container {
+	width: 100%;
+	max-width: var(--container);
+	margin-inline: auto;
+	padding-inline: 1.25rem;
+}
+
+main {
+	flex: 1;
+	padding-block: 3rem 5rem;
+}
+
+.section {
+	margin-top: 4rem;
+}
+
+.section:first-child {
+	margin-top: 0;
+}
+
+.section-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.75rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.section-head h2 {
+	text-transform: uppercase;
+}
+
+.section-head a {
+	color: var(--brand);
+	font-size: 0.9rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.section-head a:hover {
+	text-decoration: underline;
+}
+
+/* --- Badge categoria ------------------------------------------------------- */
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.25rem 0.6rem;
+	border: 1px solid var(--border-strong);
+	border-radius: 999px;
+	background: var(--surface);
+	color: var(--text-soft);
+	font-family: var(--font-display);
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+a.badge:hover {
+	border-color: var(--brand);
+	color: var(--brand);
+}
+
+/* --- Card articolo --------------------------------------------------------- */
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.card:hover {
+	transform: translateY(-3px);
+	background: var(--surface-hover);
+	border-color: var(--border-strong);
+}
+
+.card:hover .card-title {
+	color: var(--brand);
+}
+
+.card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1.4rem;
+	flex: 1;
+}
+
+.card-title {
+	font-size: 1.4rem;
+	text-transform: uppercase;
+}
+
+.card-desc {
+	color: var(--text-soft);
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+.card-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.6rem;
+	margin-top: auto;
+	padding-top: 0.4rem;
+	color: var(--muted);
+	font-size: 0.8rem;
+}
+
+.card-meta .dot::before {
+	content: '·';
+	margin-right: 0.6rem;
+}
+
+/* --- Griglia --------------------------------------------------------------- */
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+/* --- Pulsanti -------------------------------------------------------------- */
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.7rem 1.3rem;
+	border: 1px solid var(--brand-dim);
+	border-radius: 999px;
+	background: var(--brand);
+	color: #04140c;
+	font-family: var(--font-display);
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	transition: filter 0.15s ease;
+}
+
+.btn:hover {
+	filter: brightness(1.1);
+}
+
+.btn-ghost {
+	background: transparent;
+	border-color: var(--border-strong);
+	color: var(--text);
+}
+
+.btn-ghost:hover {
+	border-color: var(--brand);
+	color: var(--brand);
+	filter: none;
+}
+
+/* --- Testo prose (contenuto markdown) -------------------------------------- */
+
+.prose {
+	max-width: var(--prose);
+	color: var(--text-soft);
+	font-size: 1.06rem;
+}
+
+.prose > * + * {
+	margin-top: 1.15em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+	color: var(--text);
+	margin-top: 2.2em;
+	text-transform: uppercase;
+}
+
+.prose h2 {
+	font-size: 1.7rem;
+}
+
+.prose h3 {
+	font-size: 1.3rem;
+}
+
+.prose a {
+	color: var(--brand);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.prose strong {
+	color: var(--text);
+}
+
+.prose ul,
+.prose ol {
+	padding-left: 1.3em;
+}
+
+.prose li + li {
+	margin-top: 0.4em;
+}
+
+.prose blockquote {
+	margin-inline: 0;
+	padding: 0.5rem 0 0.5rem 1.25rem;
+	border-left: 3px solid var(--brand);
+	color: var(--text);
+	font-style: italic;
+}
+
+.prose blockquote p {
+	margin: 0;
+}
+
+.prose code {
+	padding: 0.15em 0.4em;
+	border: 1px solid var(--border);
+	border-radius: 5px;
+	background: var(--bg-soft);
+	font-size: 0.9em;
+}
+
+.prose pre {
+	padding: 1.1rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--bg-soft) !important;
+	overflow-x: auto;
+}
+
+.prose pre code {
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.prose hr {
+	border: 0;
+	border-top: 1px solid var(--border);
+	margin-block: 2.5rem;
+}
+
+.prose img {
+	border-radius: var(--radius);
+}
+
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+}
+
+.prose th,
+.prose td {
+	padding: 0.55rem 0.75rem;
+	border-bottom: 1px solid var(--border);
+	text-align: left;
+}
+
+.prose th {
+	color: var(--text);
+	font-family: var(--font-display);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+/* --- Utility --------------------------------------------------------------- */
+
+.empty {
+	padding: 3rem 1.5rem;
+	border: 1px dashed var(--border-strong);
+	border-radius: var(--radius-lg);
+	color: var(--muted);
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.card:hover {
+		transform: none;
+	}
+}

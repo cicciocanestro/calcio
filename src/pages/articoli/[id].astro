@@ -1,0 +1,22 @@
+---
+import type { Articolo } from '../../lib/articoli';
+import { getArticoli } from '../../lib/articoli';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+	const articoli = await getArticoli();
+
+	return articoli.map((articolo) => ({
+		params: { id: articolo.id },
+		props: { articolo },
+	}));
+}
+
+interface Props {
+	articolo: Articolo;
+}
+
+const { articolo } = Astro.props;
+---
+
+<PostLayout articolo={articolo} />
