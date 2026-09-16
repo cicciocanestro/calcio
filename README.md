@@ -84,10 +84,41 @@ categoria viene creata automaticamente.
 - **Titolo, autore, descrizione** → `src/consts.ts` (oggetto `SITE`)
 - **Nome e testi della pagina "Chi sono"** → `src/pages/chi-sono.astro`
 - **Colori e tipografia** → variabili CSS in cima a `src/styles/global.css`
-- **Dominio** → campo `site` in `astro.config.mjs` (serve per link canonici e feed RSS)
+- **Dominio** → campi `site` e `base` in `astro.config.mjs` (vedi la sezione Deploy)
 
 ## Deploy
 
-Il sito è completamente statico: basta pubblicare la cartella `dist/` generata da
-`npm run build`. Funziona senza configurazione su Netlify, Vercel, Cloudflare Pages e GitHub
-Pages.
+Il sito è pubblicato su **GitHub Pages**:
+
+**https://cicciocanestro.github.io/calcio/**
+
+Il deploy è automatico: ogni `git push` su `main` fa partire la workflow in
+`.github/workflows/deploy.yml`, che installa le dipendenze, controlla i tipi, builda il sito e lo
+pubblica. Lo stato si vede nella tab **Actions** del repository.
+
+### Perché c'è `base: '/calcio'` nella configurazione
+
+Il repo si chiama `calcio`, quindi GitHub Pages lo serve in una **sottocartella** e non alla
+radice del dominio. Il campo `base` in `astro.config.mjs` aggiunge quel prefisso a tutti i link.
+
+Questo ha due conseguenze pratiche.
+
+**Se aggiungi un dominio personalizzato** (es. `fuorigioco.it`), il sito passa alla radice: in
+`astro.config.mjs` cambia `site` nel tuo dominio e **rimuovi la riga `base`**. Se non lo fai, i
+link punterebbero a `fuorigioco.it/calcio/`.
+
+**Quando scrivi link interni** in un componente, usa sempre la funzione `withBase()` da
+`src/lib/url.ts`, mai un percorso assoluto scritto a mano:
+
+```astro
+<a href={withBase('/articoli/')}>Tutti gli articoli</a>
+```
+
+Un `href="/articoli/"` scritto a mano funziona in locale ma si rompe in produzione, perché
+punta alla radice del dominio invece che alla sottocartella.
+
+### Deploy su altre piattaforme
+
+Il sito è completamente statico: `npm run build` produce la cartella `dist/` che si può
+pubblicare ovunque (Netlify, Vercel, Cloudflare Pages). Su quelle piattaforme il sito sta alla
+radice, quindi va rimossa la riga `base` da `astro.config.mjs`.
